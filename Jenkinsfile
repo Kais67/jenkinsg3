@@ -40,8 +40,8 @@ pipeline {
         stage('Push (Docker Hub)') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    bat """
-                        echo %PASS% | "%DOCKER_PATH%" login -u %USER% --password-stdin
+                    powershell """
+                        \$env:PASS | & "%DOCKER_PATH%" login -u \$env:USER --password-stdin
                         "%DOCKER_PATH%" tag %IMAGE%:%TAG% %IMAGE%:latest
                         "%DOCKER_PATH%" push %IMAGE%:latest
                     """
