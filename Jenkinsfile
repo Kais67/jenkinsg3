@@ -6,8 +6,10 @@ pipeline {
     }
     
     environment {
+        // ⚠️ METTEZ VOTRE VRAI NOM D'UTILISATEUR DOCKER HUB ICI
         IMAGE = 'kais67/monapp'
         TAG = "build-${env.BUILD_NUMBER}"
+        DOCKER_PATH = 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe'
     }
     
     stages {
@@ -19,19 +21,19 @@ pipeline {
         
         stage('Docker Build') {
             steps {
-                bat 'docker version'
-                bat "docker build -t %IMAGE%:%TAG% ."
+                bat "\"%DOCKER_PATH%\" version"
+                bat "\"%DOCKER_PATH%\" build -t %IMAGE%:%TAG% ."
             }
         }
         
         stage('Smoke Test') {
             steps {
                 bat """
-                    docker rm -f monapp_test 2>nul || ver > nul
-                    docker run -d --name monapp_test -p 8082:80 %IMAGE%:%TAG%
+                    "%DOCKER_PATH%" rm -f monapp_test 2>nul || ver > nul
+                    "%DOCKER_PATH%" run -d --name monapp_test -p 8082:80 %IMAGE%:%TAG%
                     ping -n 3 127.0.0.1 > nul
                     curl -I http://localhost:8082 | find "200 OK"
-                    docker rm -f monapp_test
+                    "%DOCKER_PATH%" rm -f monapp_test
                 """
             }
         }
@@ -40,9 +42,9 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                     bat """
-                        echo %PASS% | docker login -u %USER% --password-stdin
-                        docker tag %IMAGE%:%TAG% %IMAGE%:latest
-                        docker push %IMAGE%:latest
+                        echo %PASS% | "%DOCKER_PATH%" login -u %USER% --password-stdin
+                        "%DOCKER_PATH%" tag %IMAGE%:%TAG% %IMAGE%:latest
+                        "%DOCKER_PATH%" push %IMAGE%:latest
                     """
                 }
             }
