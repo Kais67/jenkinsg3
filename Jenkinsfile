@@ -40,7 +40,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                     bat """
-                        echo %PASS% | "%DOCKER_PATH%" login -u %USER% --password-stdin
+                        "%DOCKER_PATH%" login -u %USER% -p %PASS%
                         "%DOCKER_PATH%" tag %IMAGE%:%TAG% %IMAGE%:latest
                         "%DOCKER_PATH%" push %IMAGE%:latest
                     """
