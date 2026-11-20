@@ -30,7 +30,7 @@ pipeline {
                 bat """
                     "%DOCKER_PATH%" rm -f monapp_test 2>nul || ver > nul
                     "%DOCKER_PATH%" run -d --name monapp_test -p 8082:80 %IMAGE%:%TAG%
-                    powershell -Command "Start-Sleep -Seconds 3; if ((Invoke-WebRequest -Uri 'http://localhost:8082' -UseBasicParsing).StatusCode -eq 200) { exit 0 } else { exit 1 }"
+                    C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command "Start-Sleep -Seconds 3; if ((Invoke-WebRequest -Uri 'http://localhost:8082' -UseBasicParsing).StatusCode -eq 200) { exit 0 } else { exit 1 }"
                     "%DOCKER_PATH%" rm -f monapp_test
                 """
             }
