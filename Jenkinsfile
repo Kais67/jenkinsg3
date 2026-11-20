@@ -39,14 +39,16 @@ pipeline {
         
         stage('Push (Docker Hub)') {
             steps {
-                // On ne fait plus de login, on utilise les identifiants déjà stockés par Docker Desktop
-                bat """
-                    "%DOCKER_PATH%" tag %IMAGE%:%TAG% %IMAGE%:latest
-                    "%DOCKER_PATH%" push %IMAGE%:latest
-                """
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    bat """
+                        "%DOCKER_PATH%" logout
+                        "%DOCKER_PATH%" login -u %USER% -p %PASS%
+                        "%DOCKER_PATH%" tag %IMAGE%:%TAG% %IMAGE%:latest
+                        "%DOCKER_PATH%" push %IMAGE%:latest
+                    """
+                }
             }
         }
-    }
     
     post {
         success { echo 'Build+Test+Push OK' }
