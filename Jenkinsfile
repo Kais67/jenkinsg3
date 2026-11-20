@@ -6,7 +6,6 @@ pipeline {
     }
     
     environment {
-        // ⚠️ METTEZ VOTRE VRAI NOM D'UTILISATEUR DOCKER HUB ICI
         IMAGE = 'kais67/monapp'
         TAG = "build-${env.BUILD_NUMBER}"
         DOCKER_PATH = 'C:\\Users\\kaisc\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
@@ -31,8 +30,7 @@ pipeline {
                 bat """
                     "%DOCKER_PATH%" rm -f monapp_test 2>nul || ver > nul
                     "%DOCKER_PATH%" run -d --name monapp_test -p 8082:80 %IMAGE%:%TAG%
-                    ping -n 3 127.0.0.1 > nul
-                    curl -I http://localhost:8082 | find "200 OK"
+                    powershell -Command "Start-Sleep -Seconds 3; if ((Invoke-WebRequest -Uri 'http://localhost:8082' -UseBasicParsing).StatusCode -eq 200) { exit 0 } else { exit 1 }"
                     "%DOCKER_PATH%" rm -f monapp_test
                 """
             }
