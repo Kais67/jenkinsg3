@@ -9,7 +9,7 @@ pipeline {
         // ⚠️ METTEZ VOTRE VRAI NOM D'UTILISATEUR DOCKER HUB ICI
         IMAGE = 'kais67/monapp'
         TAG = "build-${env.BUILD_NUMBER}"
-        DOCKER_PATH = 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe'
+        DOCKER_PATH = 'C:\\Users\\kaisc\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
     }
     
     stages {
