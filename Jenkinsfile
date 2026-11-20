@@ -9,6 +9,8 @@ pipeline {
         IMAGE = 'kais67/monapp'
         TAG = "build-${env.BUILD_NUMBER}"
         DOCKER_PATH = 'C:\\Users\\kaisc\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
+        // ⚠️ METTEZ VOTRE TOKEN DOCKER HUB ICI (celui qui commence par dckr_pat_)
+        DOCKER_TOKEN = 'dckr_pat_3iUae-QCb7BG_4KLmifYoVRPnAQ'
     }
     
     stages {
@@ -38,13 +40,11 @@ pipeline {
         
         stage('Push (Docker Hub)') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    bat """
-                        "%DOCKER_PATH%" login -u %USER% -p %PASS%
-                        "%DOCKER_PATH%" tag %IMAGE%:%TAG% %IMAGE%:latest
-                        "%DOCKER_PATH%" push %IMAGE%:latest
-                    """
-                }
+                bat """
+                    echo %DOCKER_TOKEN% | "%DOCKER_PATH%" login -u kais67 --password-stdin
+                    "%DOCKER_PATH%" tag %IMAGE%:%TAG% %IMAGE%:latest
+                    "%DOCKER_PATH%" push %IMAGE%:latest
+                """
             }
         }
     }
